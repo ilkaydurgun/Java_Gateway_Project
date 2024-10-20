@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import tr.edu.ogu.ceng.gateway.entity.Setting;
-import tr.edu.ogu.ceng.gateway.services.SettingService;
+import tr.edu.ogu.ceng.gateway.service.SettingService;
 
 @RestController
 @RequestMapping("/api/v1/setting")

@@ -1,4 +1,4 @@
-package tr.edu.ogu.ceng.gateway.services;
+package tr.edu.ogu.ceng.gateway.service;
 
 import org.springframework.stereotype.Service;
 
