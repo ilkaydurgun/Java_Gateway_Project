@@ -8,10 +8,6 @@ import lombok.Setter;
 
 @SpringBootApplication
 public class GatewayApplication {
-		
-	
-	@Getter @Setter
-	private String isim;
 
 	public static void main(String[] args) {
 		SpringApplication.run(GatewayApplication.class, args);

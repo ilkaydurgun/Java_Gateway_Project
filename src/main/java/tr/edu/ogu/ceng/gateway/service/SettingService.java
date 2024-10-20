@@ -9,12 +9,12 @@ import tr.edu.ogu.ceng.gateway.repository.SettingRepository;
 @RequiredArgsConstructor
 @Service
 public class SettingService {
-	private final SettingRepository sr;
+	private final SettingRepository settingService;
 	
 	
 	public Setting getSetting(Long id) {
 		
-		return sr.getReferenceById(id);
+		return settingService.getReferenceById(id);
 		
 	}
 	
