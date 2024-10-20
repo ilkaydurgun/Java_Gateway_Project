@@ -9,6 +9,7 @@ import lombok.Setter;
 public class GatewayApplication {
 	
 	
+	
 	@Getter @Setter
 	private String isim;
 
