@@ -6,9 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import lombok.Getter;
 import lombok.Setter;
 
+@SpringBootApplication
 public class GatewayApplication {
-	
-	
+		
 	
 	@Getter @Setter
 	private String isim;
