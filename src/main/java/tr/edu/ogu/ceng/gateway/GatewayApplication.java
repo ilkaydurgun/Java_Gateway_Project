@@ -3,12 +3,18 @@ package tr.edu.ogu.ceng.gateway;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+import lombok.Getter;
+import lombok.Setter;
+
 public class GatewayApplication {
+	
+	
+	@Getter @Setter
+	private String isim;
 
 	public static void main(String[] args) {
 		SpringApplication.run(GatewayApplication.class, args);
-		System.out.println("bu noktaya geldiğimizde her şey tamamdır");
+		System.out.println("görev başarılı");
 	}
 
 }
