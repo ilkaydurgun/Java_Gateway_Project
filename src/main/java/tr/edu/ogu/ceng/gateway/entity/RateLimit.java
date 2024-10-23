@@ -1,5 +1,7 @@
 package tr.edu.ogu.ceng.gateway.entity;
 
+import java.time.Duration;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,8 +23,8 @@ public class RateLimit {
     @Column(nullable = false)
     private int limit;
 
-    //@Column(nullable = false)
-   // private Duration window;
+    @Column(nullable = false)
+    private Duration window;
 
     // Getters and Setters
 }
