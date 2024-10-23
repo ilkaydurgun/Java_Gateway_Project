@@ -3,7 +3,6 @@ package tr.edu.ogu.ceng.gateway.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,8 +11,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter @Setter
 public class Payment {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,11 +43,10 @@ public class Payment {
     @Column(nullable = false)
     private LocalDate createdAt;
 
-   // @OneToMany(mappedBy = "payment")
-   // private List<Transaction> transactions;
+   @OneToMany(mappedBy = "payment")
+   private List<Transaction> transactions;
 
-   // @OneToMany(mappedBy = "payment")
-    //private List<PaymentLog> paymentLogs;
+   @OneToMany(mappedBy = "payment")
+   private List<PaymentLog> paymentLogs;
 
-    // Getters and Setters
 }
