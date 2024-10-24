@@ -2,7 +2,11 @@ spring:
   application:
     name: gateway
   datasource:
-    url: jdbc:postgresql://localhost:5432/gatewayDb
-    username: postgres
-    password: 'admin '
+    url: jdbc:postgresql://localhost:5432/ilerijava
+    username: devuser
+    password: 'devpassword '
     driver-class-name: org.postgresql.Driver
+server:
+  port: 8001
+
+   
