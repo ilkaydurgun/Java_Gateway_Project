@@ -6,21 +6,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import tr.edu.ogu.ceng.gateway.entity.User;
-import tr.edu.ogu.ceng.gateway.service.UserService;
+import tr.edu.ogu.ceng.gateway.entity.Users;
+import tr.edu.ogu.ceng.gateway.service.UsersService;
 
 
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
 
-public class UserController {
+public class UsersController {
 
-	private UserService userService;
+	private UsersService usersService;
 	@GetMapping("/{id}")
-	public User getUser(@PathVariable Long id) {
+	public Users getUser(@PathVariable Long id) {
 		
-		return userService.getUser(id);
+		return usersService.getUser(id);
 	}
 
 }
