@@ -9,15 +9,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
+
 import tr.edu.ogu.ceng.gateway.entity.ApiKey;
 import tr.edu.ogu.ceng.gateway.repository.ApiKeyRepository;
 import tr.edu.ogu.ceng.gateway.service.ApiKeyService;
 
 import java.util.Optional;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(MockitoExtension.class) // Mockito için uzantı
 public class ServiceTests {
-
+	
+static	PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:16-alpine"));
+	
+	
     @Mock
     private ApiKeyRepository apiKeyRepository; // Mock nesnesi
 
