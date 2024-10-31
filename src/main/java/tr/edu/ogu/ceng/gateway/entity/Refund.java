@@ -2,7 +2,6 @@ package tr.edu.ogu.ceng.gateway.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,5 +32,4 @@ public class Refund {
 	    @Column(nullable = false)
 	    private LocalDateTime createdAt;
 
-	    // Getters and Setters
 }
