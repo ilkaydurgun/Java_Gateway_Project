@@ -1,7 +1,7 @@
 package tr.edu.ogu.ceng.gateway.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,19 +11,21 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter @Setter
 public class Payment {
-	@Id
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Users user;
 
     @Column(nullable = false)
     private Long orderId;
@@ -40,13 +42,31 @@ public class Payment {
     @Column(nullable = false)
     private String status;
 
-    @Column(nullable = false)
-    private LocalDate createdAt;
+    @Column(name = "created_by")
+    private String createdBy;
 
-   @OneToMany(mappedBy = "payment")
-   private List<Transaction> transactions;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
-   @OneToMany(mappedBy = "payment")
-   private List<PaymentLog> paymentLogs;
+    @Column(name = "updated_by")
+    private String updatedBy;
 
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "deleted_by")
+    private String deletedBy;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    @Version
+    @Column(name = "version")
+    private Integer version;
+
+    @OneToMany(mappedBy = "payment")
+    private List<Transaction> transactions;
+
+    @OneToMany(mappedBy = "payment")
+    private List<PaymentLog> paymentLogs;
 }

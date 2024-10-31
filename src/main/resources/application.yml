@@ -1,4 +1,6 @@
 spring:
+  jta:
+    enabled: true
   application:
     name: gateway
   datasource:
