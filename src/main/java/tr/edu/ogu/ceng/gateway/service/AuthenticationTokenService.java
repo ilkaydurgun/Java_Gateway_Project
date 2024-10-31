@@ -11,10 +11,10 @@ import tr.edu.ogu.ceng.gateway.repository.AuthenticationTokenRepository;
 @Service
 public class AuthenticationTokenService {
     
-    private final AuthenticationTokenRepository authenticationTokenRepository; // final ekleyin
+    private AuthenticationTokenRepository authenticationTokenRepository; // final ekleyin
 
     // Servis metodu olarak GetMapping kullanmayın
     public AuthenticationToken getAuthenticationToken(Long id) {
-        return authenticationTokenRepository.findById(id).orElse(null);
+		return authenticationTokenRepository.getReferenceById(id);
     }
 }
