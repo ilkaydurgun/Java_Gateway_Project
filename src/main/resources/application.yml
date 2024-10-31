@@ -4,9 +4,45 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ilerijava
     username: devuser
-    password: 'devpassword '
+    password: 'devpassword'
     driver-class-name: org.postgresql.Driver
 server:
-  port: 8001
+  port: 8001  # Gateway'in çalıştığı port
 
-   
+services:
+  user:
+    url: http://localhost:8007  # Kullanıcı, grup numarası 7
+  order:
+    url: http://localhost:8003  # Sipariş, grup numarası 3
+  gateway:
+    url: http://localhost:8001  # Gateway, grup numarası 1
+  payment:
+    url: http://localhost:8006  # Ödeme, grup numarası 6
+  product:
+    url: http://localhost:8002  # Ürün, grup numarası 2
+  invoice:
+    url: http://localhost:8008  # Fatura, grup numarası 8
+  notification:
+    url: http://localhost:8004  # Bildirim, grup numarası 4
+  shoppingcart:
+    url: http://localhost:8005  # Alışveriş Sepeti, grup numarası 5
+  shipping:
+    url: http://localhost:8011  # Kargo, grup numarası 11
+
+  # Ekstra özellikler - Gateway içindeki API yönetimi için
+  apikey:
+    url: http://localhost:8001
+  ratelimit:
+    url: http://localhost:8001
+  log:
+    url: http://localhost:8001
+  authenticationtoken:
+    url: http://localhost:8001
+  paymentmethod:
+    url: http://localhost:8006
+  transaction:
+    url: http://localhost:8006
+  refund:
+    url: http://localhost:8006
+  paymentlog:
+    url: http://localhost:8006
