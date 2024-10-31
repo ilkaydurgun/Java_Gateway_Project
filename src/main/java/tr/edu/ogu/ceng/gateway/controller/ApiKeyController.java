@@ -11,13 +11,13 @@ import tr.edu.ogu.ceng.gateway.service.ApiKeyService;
 
 
 @RestController
-@RequestMapping
+@RequestMapping("/api-key")
 @RequiredArgsConstructor
 public class ApiKeyController {
 	
 	private ApiKeyService apiKeyService;
 	
-	@GetMapping
+	@GetMapping("/{id}")
 	public ApiKey getApiKey(@PathVariable Long id) {
 		return apiKeyService.getApiKey(id);
 	}
