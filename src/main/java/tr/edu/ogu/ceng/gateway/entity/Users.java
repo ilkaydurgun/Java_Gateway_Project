@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Entity
 @Getter @Setter
-public class User {
+public class Users {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

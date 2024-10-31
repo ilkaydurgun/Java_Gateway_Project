@@ -3,16 +3,16 @@ package tr.edu.ogu.ceng.gateway.service;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import tr.edu.ogu.ceng.gateway.entity.User;
-import tr.edu.ogu.ceng.gateway.repository.UserRepository;
+import tr.edu.ogu.ceng.gateway.entity.Users;
+import tr.edu.ogu.ceng.gateway.repository.UsersRepository;
 
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class UsersService {
 
-	private UserRepository userRepository;
+	private UsersRepository userRepository;
 	
-	public User getUser(Long id) {
+	public Users getUser(Long id) {
 		
 		return userRepository.getReferenceById(id);
 	}
