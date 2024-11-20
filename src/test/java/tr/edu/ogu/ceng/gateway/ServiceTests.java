@@ -9,12 +9,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import tr.edu.ogu.ceng.gateway.entity.ApiKey;
 import tr.edu.ogu.ceng.gateway.repository.ApiKeyRepository;
 import tr.edu.ogu.ceng.gateway.service.ApiKeyService;
 
 import java.util.Optional;
 
+@SpringBootTest
 @ExtendWith(MockitoExtension.class) // Mockito için uzantı
 public class ServiceTests {
 
