@@ -1,11 +1,10 @@
 spring:
+  jta:
+    enabled: false
   application:
     name: gateway
   datasource:
-    url: 
-    username: 
-    password: 
-    driver-class-name: 
+
 server:
   port: 8001  # Gateway'in çalıştığı port
 
