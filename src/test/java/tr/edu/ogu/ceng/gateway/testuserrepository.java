@@ -1,5 +1,6 @@
 package tr.edu.ogu.ceng.gateway;
 
+
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
@@ -13,41 +14,33 @@ import tr.edu.ogu.ceng.gateway.entity.Users;
 import tr.edu.ogu.ceng.gateway.repository.UsersRepository;
 
 @SpringBootTest
-public class testuserrepository {
-	@org.testcontainers.junit.jupiter.Container
-	static PostgreSQLContainer<?> postgres=
-			new PostgreSQLContainer<>("postgres:15-alpine");
+public class TestUserRepository{
+	static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine");
+	
 	static {
 		postgres.start();
 	}
-	@Autowired
-	UsersRepository repository;
 	
+	@Autowired		//bu test ayaga kalktiginda repo null yemesin diye enject ediyoruz
+	UsersRepository repository; 
 	
 	@Test
 	public void test() {
-		
-		Users user=new Users();
+		Users user = new Users();
 		user.setCreatedAt(LocalDateTime.now());
-		user.setUsername("baris");
-		user.setPassword("12345");
-		user.setRoles("root");
-		user.setEmail("cihanbaristurgut@gmail.com");
+		user.setUsername("medusa");
+		user.setPassword("admin");
+		user.setRoles("admin");
+		user.setEmail("bkorlaelci@gmail.com");
 		repository.save(user);
-		
-		
-		
-	}
-	@DynamicPropertySource
-	static void configureProporties(DynamicPropertyRegistry registry) {
-		
-		registry.add("spring.datasource.url",postgres::getJdbcUrl );
-
-		registry.add("spring.datasource.username", postgres::getUsername);
-
-		registry.add("spring.datasource.password", postgres::getPassword);
-
-
 	}
 	
+	@DynamicPropertySource
+	static void configureProperties(DynamicPropertyRegistry registry) {
+		
+		registry.add("spring.datasource.url", postgres::getJdbcUrl);
+		registry.add("spring.datasource.username", postgres::getUsername);
+		registry.add("spring.datasource.password", postgres::getPassword);
+		
+	}
 }
