@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import tr.edu.ogu.ceng.gateway.entity.ApiKey;
 
+@SpringBootTest
 @ExtendWith(MockitoExtension.class) 
 public class EntityTests {
 

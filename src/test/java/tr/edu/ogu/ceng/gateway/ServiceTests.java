@@ -26,7 +26,7 @@ import tr.edu.ogu.ceng.gateway.service.ApiKeyService;
 
 import java.util.Optional;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 @ExtendWith(MockitoExtension.class) // Mockito için uzantı
 @Testcontainers
 public class ServiceTests {
