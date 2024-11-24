@@ -1,4 +1,4 @@
-package tr.edu.ogu.ceng.gateway;
+package tr.edu.ogu.ceng.gateway.servicetests;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

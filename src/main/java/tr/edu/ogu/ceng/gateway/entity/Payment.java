@@ -3,70 +3,74 @@ package tr.edu.ogu.ceng.gateway.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Version;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter
+@Table(name = "payments") // Tablonuzun adı ile eşleştirilmesi için eklenmiştir.
 public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    // User ile ManyToOne ilişki
+    @ManyToOne(fetch = FetchType.LAZY) // Performans için LAZY yükleme önerilir.
     @JoinColumn(name = "user_id", nullable = false)
     private Users user;
 
-    @Column(nullable = false)
+    // Order ID alanı
+    @Column(name = "order_id", nullable = false)
     private Long orderId;
 
-    @Column(nullable = false)
+    // Ödeme miktarı
+    @Column(name = "amount", nullable = false, precision = 10, scale = 2) // Ondalık için precision ve scale
     private BigDecimal amount;
 
-    @Column(nullable = false)
+    // Para birimi
+    @Column(name = "currency", nullable = false, length = 10)
     private String currency;
 
-    @Column(nullable = false)
+    // Ödeme yöntemi
+    @Column(name = "payment_method", nullable = false, length = 50)
     private String paymentMethod;
 
-    @Column(nullable = false)
+    // Ödeme durumu
+    @Column(name = "status", nullable = false, length = 50)
     private String status;
 
-    @Column(name = "created_by")
+    // Diğer izleme sütunları
+    @Column(name = "created_by", length = 255)
     private String createdBy;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt; // Varsayılan olarak şimdi
 
-    @Column(name = "updated_by")
+    @Column(name = "updated_by", length = 255)
     private String updatedBy;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "deleted_by")
+    @Column(name = "deleted_by", length = 255)
     private String deletedBy;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    // Versiyonlama
     @Version
     @Column(name = "version")
     private Integer version;
 
-    @OneToMany(mappedBy = "payment")
+    // Transactions ile ilişki
+    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true) // Cascade ve orphan removal
     private List<Transaction> transactions;
 
-    @OneToMany(mappedBy = "payment")
+    // PaymentLog ile ilişki
+    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PaymentLog> paymentLogs;
 }

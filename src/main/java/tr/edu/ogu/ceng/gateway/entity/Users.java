@@ -2,8 +2,11 @@ package tr.edu.ogu.ceng.gateway.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,6 +20,21 @@ import lombok.Setter;
 @Getter @Setter
 public class Users {
 
+	
+	@Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Users users = (Users) o;
+        return Objects.equals(id, users.id); // id ile eşitliği kontrol et
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+	
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,7 +51,7 @@ public class Users {
     @Column(nullable = false)
     private String roles;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
     private List<ApiKey> apiKeys;
 
     @OneToMany(mappedBy = "user")

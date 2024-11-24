@@ -1,0 +1,13 @@
+CREATE TABLE Refunds (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    transaction_id INT NOT NULL REFERENCES Transactions(id) ON DELETE CASCADE,
+    amount DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    created_by VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_by VARCHAR(255),
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_by VARCHAR(255),
+    deleted_at TIMESTAMP,
+    version INT DEFAULT 1
+);

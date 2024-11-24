@@ -3,18 +3,22 @@ package tr.edu.ogu.ceng.gateway.entity;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
+import tr.edu.ogu.ceng.gateway.converter.DurationConverter;
 
 @Entity
 @Getter @Setter
+@Table(name="rate_limits")
 public class RateLimit {
 
     @Id
@@ -25,10 +29,11 @@ public class RateLimit {
     @JoinColumn(name = "api_key_id", nullable = false)
     private ApiKey apiKey;
 
-    @Column(nullable = false)
+    @Column(name = "limit_value", nullable = false)
     private int limit;
 
-    @Column(nullable = false)
+    //@Convert(converter = DurationConverter.class)
+    @Column(name = "window_value", nullable = false)
     private Duration window;
 
     @Column(name = "created_by")

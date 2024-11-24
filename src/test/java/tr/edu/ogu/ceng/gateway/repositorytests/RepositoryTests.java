@@ -1,4 +1,4 @@
-package tr.edu.ogu.ceng.gateway;
+package tr.edu.ogu.ceng.gateway.repositorytests;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
