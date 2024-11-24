@@ -1,4 +1,4 @@
-package tr.edu.ogu.ceng.gateway;
+package tr.edu.ogu.ceng.gateway.dtotests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import tr.edu.ogu.ceng.gateway.dto.ApiKeyDto;
 
-@SpringBootTest
 @ExtendWith(MockitoExtension.class) 
 public class DtoTests {
 

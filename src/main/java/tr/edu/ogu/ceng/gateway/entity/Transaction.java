@@ -2,6 +2,8 @@ package tr.edu.ogu.ceng.gateway.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,12 +11,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter
+@Table(name = "transactions")
 public class Transaction {
 
     @Id
@@ -37,8 +42,8 @@ public class Transaction {
     @Column(nullable = false)
     private String currency;
 
-    @Column(nullable = false)
-    private LocalDateTime timestamp;
+   // @Column(nullable = false)
+   // private LocalDateTime timestamp;
 
     @Column(name = "created_by")
     private String createdBy;
