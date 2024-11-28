@@ -1,4 +1,4 @@
-package tr.edu.ogu.ceng.gateway;
+package tr.edu.ogu.ceng.gateway.repositorytests;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

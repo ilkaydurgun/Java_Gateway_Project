@@ -1,4 +1,4 @@
-package tr.edu.ogu.ceng.gateway;
+package tr.edu.ogu.ceng.gateway.repositorytests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

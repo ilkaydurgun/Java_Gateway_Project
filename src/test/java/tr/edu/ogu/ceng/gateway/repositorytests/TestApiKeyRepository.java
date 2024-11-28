@@ -1,9 +1,10 @@
-package tr.edu.ogu.ceng.gateway;
+package tr.edu.ogu.ceng.gateway.repositorytests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +16,20 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import tr.edu.ogu.ceng.gateway.entity.ApiKey;
 import tr.edu.ogu.ceng.gateway.entity.Log;
 import tr.edu.ogu.ceng.gateway.entity.Payment;
+import tr.edu.ogu.ceng.gateway.entity.PaymentLog;
+import tr.edu.ogu.ceng.gateway.entity.Transaction;
 import tr.edu.ogu.ceng.gateway.entity.Users;
 import tr.edu.ogu.ceng.gateway.repository.ApiKeyRepository;
 import tr.edu.ogu.ceng.gateway.repository.LogRepository;
+import tr.edu.ogu.ceng.gateway.repository.PaymentLogRepository;
 import tr.edu.ogu.ceng.gateway.repository.PaymentRepository;
 import tr.edu.ogu.ceng.gateway.repository.RateLimitRepository;
+import tr.edu.ogu.ceng.gateway.repository.TransactionRepository;
 import tr.edu.ogu.ceng.gateway.repository.UsersRepository;
 
 @SpringBootTest
-public class TestLogRepository {
-
+public class TestApiKeyRepository {
+	
 	@org.testcontainers.junit.jupiter.Container
 	static PostgreSQLContainer<?> postgres=
 	new PostgreSQLContainer<>("postgres:15-alpine");
@@ -33,16 +38,22 @@ public class TestLogRepository {
 	}
 	
 	@Autowired
-	LogRepository logRepository;
+	ApiKeyRepository apiKeyRepository;
 	
 	@Autowired
 	UsersRepository usersRepository;
 	
 	@Autowired
+	LogRepository logRepository;
+	
+	@Autowired
 	RateLimitRepository rateLimitRepository;
 	
 	@Autowired
-	ApiKeyRepository apiKeyRepository;
+	TransactionRepository transactionRepository;
+	
+	@Autowired
+	PaymentLogRepository paymentLogRepository;
 	
 	@Autowired
 	PaymentRepository paymentRepository;
@@ -53,15 +64,15 @@ public class TestLogRepository {
 		// Kullanıcı oluşturma
         Users user = new Users();
         user.setCreatedAt(LocalDateTime.now());
-        user.setUsername("barisss123");
+        user.setUsername("barisss12213");
         user.setPassword("12345");
         user.setRoles("root");
-        user.setEmail("cihanbaristurguttt123@gmail.com");
+        user.setEmail("cihanbaristurguttt122313@gmail.com");
         Users savedUser = usersRepository.save(user);
 
         // Kullanıcının başarıyla kaydedildiğini doğrulama
         assertThat(savedUser).isNotNull();
-        assertThat(savedUser.getUsername()).isEqualTo("barisss123");
+        assertThat(savedUser.getUsername()).isEqualTo(user.getUsername());
         
         ApiKey apiKey=new ApiKey();
 		apiKey.setUser(savedUser);
@@ -92,6 +103,44 @@ public class TestLogRepository {
         assertThat(savedPayment.getCurrency()).isEqualTo("USD");
         assertThat(savedPayment.getStatus()).isEqualTo("COMPLETED");
         
+        // İşlem oluşturma
+        Transaction transaction = new Transaction();
+        transaction.setPayment(savedPayment);
+        transaction.setTransactionId(UUID.randomUUID().toString());
+        transaction.setStatus("SUCCESS");
+        transaction.setAmount(BigDecimal.valueOf(100.00));
+        transaction.setCurrency("USD");
+        transaction.setCreatedAt(LocalDateTime.now());
+        transaction.setUpdatedAt(LocalDateTime.now());
+
+        // Transaction kaydı
+        Transaction savedTransaction = transactionRepository.save(transaction);
+
+        // Transaction kaydının doğruluğunu kontrol etme
+        assertThat(savedTransaction).isNotNull();
+        assertThat(savedTransaction.getAmount()).isEqualTo(BigDecimal.valueOf(100.00));
+        assertThat(savedTransaction.getCurrency()).isEqualTo("USD");
+        assertThat(savedTransaction.getStatus()).isEqualTo("SUCCESS");
+        
+        // Payment ve Transaction ilişkisinin doğruluğunu kontrol etme
+        assertThat(savedTransaction.getPayment()).isEqualTo(savedPayment);
+        assertThat(savedPayment.getUser()).isEqualTo(savedUser);
+        
+     // PaymentLog oluşturma
+        PaymentLog paymentLog = new PaymentLog();
+        paymentLog.setPayment(savedPayment);
+        paymentLog.setAction("Payment completed");
+        paymentLog.setCreatedAt(LocalDateTime.now());
+        paymentLog.setUpdatedAt(LocalDateTime.now());
+
+        // PaymentLog kaydı
+        PaymentLog savedPaymentLog = paymentLogRepository.save(paymentLog);
+
+        // PaymentLog kaydının doğruluğunu kontrol etme
+        assertThat(savedPaymentLog).isNotNull();
+        assertThat(savedPaymentLog.getAction()).isEqualTo("Payment completed");
+        assertThat(savedPaymentLog.getPayment()).isEqualTo(savedPayment);
+    	
       //Log oluşturma
         Log log=new Log();
         log.setApiKey(savedApiKey);
@@ -128,6 +177,7 @@ public class TestLogRepository {
  		assertThat(savedRateLimit.getUpdatedAt()).isNotNull();*/
 		
 	}
+	
 	@DynamicPropertySource
 	static void configureProporties(DynamicPropertyRegistry registry) {
 		
@@ -137,7 +187,5 @@ public class TestLogRepository {
 
 		registry.add("spring.datasource.password", postgres::getPassword);
 
-
 	}
-	
 }

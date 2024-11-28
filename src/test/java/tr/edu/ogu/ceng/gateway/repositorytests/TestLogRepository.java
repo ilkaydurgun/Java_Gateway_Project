@@ -1,9 +1,8 @@
-package tr.edu.ogu.ceng.gateway;
+package tr.edu.ogu.ceng.gateway.repositorytests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
@@ -14,32 +13,33 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import tr.edu.ogu.ceng.gateway.entity.ApiKey;
-import tr.edu.ogu.ceng.gateway.entity.AuthenticationToken;
 import tr.edu.ogu.ceng.gateway.entity.Log;
 import tr.edu.ogu.ceng.gateway.entity.Payment;
 import tr.edu.ogu.ceng.gateway.entity.Users;
 import tr.edu.ogu.ceng.gateway.repository.ApiKeyRepository;
-import tr.edu.ogu.ceng.gateway.repository.AuthenticationTokenRepository;
 import tr.edu.ogu.ceng.gateway.repository.LogRepository;
 import tr.edu.ogu.ceng.gateway.repository.PaymentRepository;
 import tr.edu.ogu.ceng.gateway.repository.RateLimitRepository;
 import tr.edu.ogu.ceng.gateway.repository.UsersRepository;
 
 @SpringBootTest
-public class TestAuthenticationTokenRepository {
+public class TestLogRepository {
 
 	@org.testcontainers.junit.jupiter.Container
 	static PostgreSQLContainer<?> postgres=
-			new PostgreSQLContainer<>("postgres:15-alpine");
+	new PostgreSQLContainer<>("postgres:15-alpine");
 	static {
 		postgres.start();
 	}
 	
 	@Autowired
-	AuthenticationTokenRepository authenticationTokenRepository;
+	LogRepository logRepository;
 	
 	@Autowired
 	UsersRepository usersRepository;
+	
+	@Autowired
+	RateLimitRepository rateLimitRepository;
 	
 	@Autowired
 	ApiKeyRepository apiKeyRepository;
@@ -47,27 +47,21 @@ public class TestAuthenticationTokenRepository {
 	@Autowired
 	PaymentRepository paymentRepository;
 	
-	@Autowired
-	LogRepository logRepository;
-	
-	@Autowired
-	RateLimitRepository rateLimitRepository;
-	
 	@Test
 	public void test() {
 		
 		// Kullanıcı oluşturma
         Users user = new Users();
         user.setCreatedAt(LocalDateTime.now());
-        user.setUsername("barisss12213");
+        user.setUsername("barisss123");
         user.setPassword("12345");
         user.setRoles("root");
-        user.setEmail("cihanbaristurguttt122313@gmail.com");
+        user.setEmail("cihanbaristurguttt123@gmail.com");
         Users savedUser = usersRepository.save(user);
 
         // Kullanıcının başarıyla kaydedildiğini doğrulama
         assertThat(savedUser).isNotNull();
-        assertThat(savedUser.getUsername()).isEqualTo(user.getUsername());
+        assertThat(savedUser.getUsername()).isEqualTo("barisss123");
         
         ApiKey apiKey=new ApiKey();
 		apiKey.setUser(savedUser);
@@ -132,25 +126,7 @@ public class TestAuthenticationTokenRepository {
  		assertThat(savedRateLimit.getApiKey().getApiKey()).isEqualTo("19");
  		assertThat(savedRateLimit.getCreatedAt()).isNotNull();
  		assertThat(savedRateLimit.getUpdatedAt()).isNotNull();*/
-        
-        AuthenticationToken authenticationToken=new AuthenticationToken();
-        authenticationToken.setUser(savedUser);
-        authenticationToken.setToken("testtesttesttest");
-        authenticationToken.setIssuedAt(LocalDateTime.now());
-        authenticationToken.setExpiresAt(LocalDateTime.now());
-        authenticationToken.setCreatedAt(LocalDateTime.now());
-        
-        // AuthenticationToken kaydı
-        AuthenticationToken savedAuthenticationToken = authenticationTokenRepository.save(authenticationToken);
-
-       // AuthenticationToken kaydının doğruluğunu kontrol etme
-        assertThat(savedAuthenticationToken).isNotNull();
-        assertThat(savedAuthenticationToken.getToken()).isEqualTo("testtesttesttest");
-        LocalDateTime issuedAt = authenticationTokenRepository.getByTokenIssuedAt("testtesttesttest"); //authenticationtoken repositoryde kendi yazdığımız getbytokenissuedat ile veri çektik
-        System.out.println(issuedAt); // Ekrana yazdırma (isteğe bağlı)
-
-        assertThat(savedAuthenticationToken.getIssuedAt()).isEqualToIgnoringSeconds(issuedAt); //nanosaniye düzeyindeki hassasiyeti almaz
-        
+		
 	}
 	@DynamicPropertySource
 	static void configureProporties(DynamicPropertyRegistry registry) {
@@ -161,5 +137,7 @@ public class TestAuthenticationTokenRepository {
 
 		registry.add("spring.datasource.password", postgres::getPassword);
 
+
 	}
+	
 }
