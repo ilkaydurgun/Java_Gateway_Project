@@ -3,7 +3,6 @@ package tr.edu.ogu.ceng.gateway.entity;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +13,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
-import tr.edu.ogu.ceng.gateway.converter.DurationConverter;
 
 @Entity
 @Getter @Setter
