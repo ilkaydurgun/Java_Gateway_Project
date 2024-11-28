@@ -49,6 +49,7 @@ public class TestTransactionRepository {
         user.setUsername("baris");
         user.setPassword("12345");
         user.setRoles("root");
+        user.setDeletedBy("root");       
         user.setEmail("cihanbaristurgut@gmail.com");
         Users savedUser = usersRepository.save(user);
 
