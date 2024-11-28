@@ -1,5 +1,7 @@
-package tr.edu.ogu.ceng.gateway;
+package tr.edu.ogu.ceng.gateway.repository;
 
+
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +13,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import tr.edu.ogu.ceng.gateway.entity.Users;
-import tr.edu.ogu.ceng.gateway.repository.UsersRepository;
 
 @SpringBootTest
 public class TestUserRepository{
@@ -33,7 +34,18 @@ public class TestUserRepository{
 		user.setRoles("admin");
 		user.setEmail("bkorlaelci@gmail.com");
 		repository.save(user);
+		
+		Users user2= repository.getByUsername("medusa").get();
+		
+		assertTrue(user2.equals(user));	
+			
 	}
+	
+	public void testGetAllUsers() {
+		
+		repository.getAllUsers().get();
+	}
+	
 	
 	@DynamicPropertySource
 	static void configureProperties(DynamicPropertyRegistry registry) {
