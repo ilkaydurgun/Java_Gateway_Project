@@ -10,43 +10,39 @@ import java.util.UUID;
 import org.hibernate.Session;
 
 import org.assertj.core.api.AbstractObjectAssert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import jakarta.persistence.EntityManager;
+import tr.edu.ogu.ceng.gateway.common.DPS;
 import tr.edu.ogu.ceng.gateway.entity.ApiKey;
 import tr.edu.ogu.ceng.gateway.entity.Users;
 import tr.edu.ogu.ceng.gateway.repository.ApiKeyRepository;
 import tr.edu.ogu.ceng.gateway.repository.LogRepository;
+import tr.edu.ogu.ceng.gateway.repository.PaymentMethodRepository;
 import tr.edu.ogu.ceng.gateway.repository.PaymentRepository;
 import tr.edu.ogu.ceng.gateway.repository.RateLimitRepository;
 import tr.edu.ogu.ceng.gateway.repository.TransactionRepository;
 import tr.edu.ogu.ceng.gateway.repository.UsersRepository;
 import tr.edu.ogu.ceng.gateway.entity.Log;
 import tr.edu.ogu.ceng.gateway.entity.Payment;
+import tr.edu.ogu.ceng.gateway.entity.PaymentMethod;
 import tr.edu.ogu.ceng.gateway.entity.RateLimit;
 import tr.edu.ogu.ceng.gateway.entity.Transaction;
 
 
 @SpringBootTest
-public class TestPaymentMethodRepository {
-	
-	@org.testcontainers.junit.jupiter.Container
-	static PostgreSQLContainer<?> postgres=
-			new PostgreSQLContainer<>("postgres:15-alpine");
-	static {
-		postgres.start();
-	}
+public class TestPaymentMethodRepository extends DPS {
+
 	
 	@Autowired
 	UsersRepository usersRepository;
-	
-	@Autowired
-	private EntityManager entityManager;
 	
 	@Autowired
 	ApiKeyRepository apiKeyRepository;
@@ -62,125 +58,201 @@ public class TestPaymentMethodRepository {
 	
 	@Autowired
 	PaymentRepository paymentRepository;
-	@Test
-	public void test() {
-		
+	
+	@Autowired
+	PaymentMethodRepository paymentMethodRepository;
+	
+	Users user=new Users();
+	RateLimit rateLimit=new RateLimit();
+	Transaction transaction = new Transaction();
+	ApiKey apiKey = new ApiKey();
+	Payment payment=new Payment();
+	Log log=new Log();
+	PaymentMethod paymentMethod=new PaymentMethod();
+	
+	Users savedUser;
+	ApiKey savedApiKey;
+	Log savedLog;
+	RateLimit savedRateLimit;
+	Payment savedPayment;
+	Transaction savedTransaction;
+	PaymentMethod savedPaymentMethod;
+	
+	@BeforeEach
+	void setup() {
 		// Kullanıcı oluşturma
-        Users user = new Users();
         user.setUsername("baris");
         user.setPassword("12345");
         user.setEmail("cihanbaristurgut@gmail.com");
         user.setRoles("root");
         user.setCreatedAt(LocalDateTime.now());
-        Users savedUser = usersRepository.save(user);
-
+        savedUser=usersRepository.save(user);
+        
+        // Ödeme yöntemi oluşturma
+        paymentMethod.setUser(savedUser);
+        paymentMethod.setCreatedAt(LocalDateTime.now());
+        paymentMethod.setCreatedBy(savedUser.getUsername());
+        paymentMethod.setDefault(true);
+        paymentMethod.setDeletedAt(LocalDateTime.now());
+        paymentMethod.setDeletedBy(user.getUsername());
+        paymentMethod.setDetails("currency dolar");
+        paymentMethod.setType("$");
+        paymentMethod.setUpdatedAt(LocalDateTime.now());
+        paymentMethod.setUpdatedBy("baris");
+        paymentMethod.setVersion(1);
+        savedPaymentMethod = paymentMethodRepository.save(paymentMethod);
+	
+	}
+	
+	
+	@Test
+	@Transactional
+	public void verify_savedAllObjectSuccessfully() {
         // Kullanıcının başarıyla kaydedildiğini doğrulama
         assertThat(savedUser).isNotNull();
         assertThat(savedUser.getUsername()).isEqualTo("baris");
-		
-		ApiKey apiKey=new ApiKey();
-		apiKey.setUser(savedUser);
-		apiKey.setApiKey("1");
-		apiKey.setCreatedAt(LocalDateTime.now());
-		ApiKey savedApiKey = apiKeyRepository.save(apiKey);
-		
-		 // Apikeyin başarıyla kaydedildiğini doğrulama
-        assertThat(savedApiKey).isNotNull();
-        assertThat(savedApiKey.getApiKey()).isEqualTo("1");
-        
-        //Log oluşturma
-        Log log=new Log();
-        log.setApiKey(savedApiKey);
-        log.setEndpoint("1");
-        log.setRequestTime(LocalDateTime.now());
-        log.setStatusCode(0);
-        log.setCreatedAt(LocalDateTime.now());
-        Log savedLog = logRepository.save(log);
-
-     // Log başarıyla kaydedildiğini doğrulama
-        assertThat(savedLog).isNotNull();
-        assertThat(savedLog.getEndpoint()).isEqualTo("1");
-        
-     /*// Rate Limit oluşturma
-     		RateLimit rateLimit = new RateLimit();
-     		rateLimit.setApiKey(savedApikey);
-     		rateLimit.setLimit(100);
-     		rateLimit.setWindow(Duration.ofMinutes(30));
-     		rateLimit.setCreatedBy("Test User");
-     		rateLimit.setCreatedAt(LocalDateTime.now());
-     		rateLimit.setUpdatedBy("Test User");
-     		rateLimit.setUpdatedAt(LocalDateTime.now());
-     		
-     		// RateLimit kaydını veritabanına kaydetme
-     		RateLimit savedRateLimit = rateLimitRepository.save(rateLimit);
-     		// Kaydedilen RateLimit verisinin doğruluğunu kontrol etme
-     		assertThat(savedRateLimit).isNotNull();
-     		assertThat(savedRateLimit.getLimit()).isEqualTo(100);
-     		assertThat(savedRateLimit.getWindow()).isEqualTo(Duration.ofMinutes(30));
-     		assertThat(savedRateLimit.getCreatedBy()).isEqualTo("Test User");
-     		assertThat(savedRateLimit.getApiKey()).isNotNull();
-     		assertThat(savedRateLimit.getApiKey().getApiKey()).isEqualTo("19");
-     		assertThat(savedRateLimit.getCreatedAt()).isNotNull();
-     		assertThat(savedRateLimit.getUpdatedAt()).isNotNull();*/
-
-		
-     // Ödeme oluşturma
-        Payment payment = new Payment();
-        payment.setUser(savedUser);
-        payment.setCreatedAt(LocalDateTime.now());
-        payment.setOrderId(12345L);
-        payment.setAmount(BigDecimal.valueOf(100.00));
-        payment.setCurrency("USD");
-        payment.setPaymentMethod("CREDIT_CARD");
-        payment.setStatus("COMPLETED");
-
-        // Payment kaydı
-        Payment savedPayment = paymentRepository.save(payment);
-
-        // Payment kaydının doğruluğunu kontrol etme
-        assertThat(savedPayment).isNotNull();
-        assertThat(savedPayment.getAmount()).isEqualTo(BigDecimal.valueOf(100.00));
-        assertThat(savedPayment.getCurrency()).isEqualTo("USD");
-        assertThat(savedPayment.getStatus()).isEqualTo("COMPLETED");
-
-        // İşlem oluşturma
-        Transaction transaction = new Transaction();
-        transaction.setPayment(savedPayment);
-        transaction.setTransactionId(UUID.randomUUID().toString());
-        transaction.setStatus("SUCCESS");
-        transaction.setAmount(BigDecimal.valueOf(100.00));
-        transaction.setCurrency("USD");
-        transaction.setCreatedAt(LocalDateTime.now());
-        transaction.setUpdatedAt(LocalDateTime.now());
-
-        // Transaction kaydı
-        Transaction savedTransaction = transactionRepository.save(transaction);
-
-        // Transaction kaydının doğruluğunu kontrol etme
-        assertThat(savedTransaction).isNotNull();
-        assertThat(savedTransaction.getAmount()).isEqualTo(BigDecimal.valueOf(100.00));
-        assertThat(savedTransaction.getCurrency()).isEqualTo("USD");
-        assertThat(savedTransaction.getStatus()).isEqualTo("SUCCESS");
-        
-        // Payment ve Transaction ilişkisinin doğruluğunu kontrol etme
-        assertThat(savedTransaction.getPayment()).isEqualTo(savedPayment);
-        assertThat(savedPayment.getUser()).isEqualTo(savedUser);
-
-
-		
-		
-		
+		// Ödeme şeklinin başarıyla kaydedildiğini doğrulama
+        assertThat(savedPaymentMethod).isNotNull();
+        assertThat(savedPaymentMethod.getUser().getUsername()).isEqualTo(user.getUsername());
+        assertThat(savedPaymentMethod.getCreatedAt()).isNotNull();
+        assertThat(savedPaymentMethod.getCreatedBy()).isNotNull();
+        assertThat(savedPaymentMethod.getDeletedAt()).isNotNull();
+        assertThat(savedPaymentMethod.getDeletedBy()).isNotNull();
+        assertThat(savedPaymentMethod.getDetails()).isNotNull();
+        assertThat(savedPaymentMethod.getType()).isNotNull();
+        assertThat(savedPaymentMethod.getUpdatedAt()).isNotNull();
+        assertThat(savedPaymentMethod.getUpdatedBy()).isNotNull();
+        assertThat(savedPaymentMethod.getVersion()).isNotNull();
 	}
-	@DynamicPropertySource
-	static void configureProporties(DynamicPropertyRegistry registry) {
-		
-		registry.add("spring.datasource.url",postgres::getJdbcUrl );
-
-		registry.add("spring.datasource.username", postgres::getUsername);
-
-		registry.add("spring.datasource.password", postgres::getPassword);
-
+	
+	@Test
+	@Transactional
+	public void getByUsername_returnType() {
+	    System.out.println("Get type by username: " + paymentMethodRepository.getTypeByUsername("baris"));
 
 	}
 	
+	@Test
+	@Transactional
+	public void getByUsername_returnDetails() {
+	    System.out.println("Get details by username: " + paymentMethodRepository.getDetailsByUsername("baris"));
+
+	}
+	
+	@Test
+	@Transactional
+	public void getByUsername_returnIsDefault() {
+	    System.out.println("Get default by username: " + paymentMethodRepository.getIsDefaultByUsername("baris"));
+
+	}
+	
+	@Test
+	@Transactional
+	public void getByUsername_returnCreatedBy() {
+	    System.out.println("Get created by by username: " + paymentMethodRepository.getCreatedByByUsername("baris"));
+
+	}
+	
+	@Test
+	@Transactional
+	public void getByUsername_returnCreatedAt() {
+	    System.out.println("Get created at by username: " + paymentMethodRepository.getcreatedAtByUsername("baris"));
+
+	}
+	
+	@Test
+	@Transactional
+	public void getByUsername_returnUpdatedBy() {
+	    System.out.println("Get updated by by username: " + paymentMethodRepository.getUpdatedByByUsername("baris"));
+
+	}
+	
+	@Test
+	@Transactional
+	public void getByUsername_returnUpdatedAt() {
+	    System.out.println("Get updated at by username: " + paymentMethodRepository.getUpdatedAtByUsername("baris"));
+
+	}
+	
+	@Test
+	@Transactional
+	public void getByUsername_returnDeletedBy() {
+	    System.out.println("Get deleted by by username: " + paymentMethodRepository.getDeletedByByUsername("baris"));
+
+	}
+	
+	@Test
+	@Transactional
+	public void getByUsername_returnDeletedAt() {
+	    System.out.println("Get deleted at by username: " + paymentMethodRepository.getDeletedAtByUsername("baris"));
+
+	}
+	
+	@Test
+	@Transactional
+	public void getByUsername_returnVersion() {
+	    System.out.println("Get version by username: " + paymentMethodRepository.getVersionByUsername("baris"));
+
+	}
+	
+	@Test
+	@Transactional
+	public void getByEmail_returnType() {
+	    System.out.println("Get type by email: " + paymentMethodRepository.getTypeByEmail("cihanbaristurgut@gmail.com"));
+	}
+
+	@Test
+	@Transactional
+	public void getByEmail_returnDetails() {
+	    System.out.println("Get details by email: " + paymentMethodRepository.getDetailsByEmail("cihanbaristurgut@gmail.com"));
+	}
+
+	@Test
+	@Transactional
+	public void getByEmail_returnIsDefault() {
+	    System.out.println("Get default by email: " + paymentMethodRepository.getIsDefaultByEmail("cihanbaristurgut@gmail.com"));
+	}
+
+	@Test
+	@Transactional
+	public void getByEmail_returnCreatedBy() {
+	    System.out.println("Get created by by email: " + paymentMethodRepository.getCreatedByByEmail("cihanbaristurgut@gmail.com"));
+	}
+
+	@Test
+	@Transactional
+	public void getByEmail_returnCreatedAt() {
+	    System.out.println("Get created at by email: " + paymentMethodRepository.getCreatedAtByEmail("cihanbaristurgut@gmail.com"));
+	}
+
+	@Test
+	@Transactional
+	public void getByEmail_returnUpdatedBy() {
+	    System.out.println("Get updated by by email: " + paymentMethodRepository.getUpdatedByByEmail("cihanbaristurgut@gmail.com"));
+	}
+
+	@Test
+	@Transactional
+	public void getByEmail_returnUpdatedAt() {
+	    System.out.println("Get updated at by email: " + paymentMethodRepository.getUpdatedAtByEmail("cihanbaristurgut@gmail.com"));
+	}
+
+	@Test
+	@Transactional
+	public void getByEmail_returnDeletedBy() {
+	    System.out.println("Get deleted by by email: " + paymentMethodRepository.getDeletedByByEmail("cihanbaristurgut@gmail.com"));
+	}
+
+	@Test
+	@Transactional
+	public void getByEmail_returnDeletedAt() {
+	    System.out.println("Get deleted at by email: " + paymentMethodRepository.getDeletedAtByEmail("cihanbaristurgut@gmail.com"));
+	}
+
+	@Test
+	@Transactional
+	public void getByEmail_returnVersion() {
+	    System.out.println("Get version by email: " + paymentMethodRepository.getVersionByEmail("cihanbaristurgut@gmail.com"));
+	}
+
 }

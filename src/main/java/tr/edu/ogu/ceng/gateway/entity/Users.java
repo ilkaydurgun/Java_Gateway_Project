@@ -21,18 +21,18 @@ import lombok.Setter;
 public class Users {
 
 	
-	@Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Users users = (Users) o;
-        return Objects.equals(id, users.id); // id ile eşitliği kontrol et
-    }
+	 @Override
+	    public boolean equals(Object o) {
+	        if (this == o) return true;
+	        if (o == null || getClass() != o.getClass()) return false;
+	        Users users = (Users) o;
+	        return Objects.equals(username, users.username);  // username'ı eşitlik için baz alabilirsiniz
+	    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+	    @Override
+	    public int hashCode() {
+	        return Objects.hash(username);  // Aynı şekilde hashCode'da da username'ı kullanabilirsiniz
+	    }
 	
 	
     @Id

@@ -8,12 +8,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter @Setter
+@Table (name="payment_methods")
 public class PaymentMethod {
 
     @Id
@@ -30,7 +32,7 @@ public class PaymentMethod {
     @Column(nullable = false)
     private String details;
 
-    @Column(nullable = false)
+    @Column(nullable = false) // paymentMethod.setDefault veya setIsDefault çıkmıyor.
     private boolean isDefault;
 
     @Column(name = "created_by")
