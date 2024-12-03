@@ -1,5 +1,6 @@
 package tr.edu.ogu.ceng.gateway.repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.hibernate.query.NativeQuery;
@@ -12,13 +13,35 @@ import tr.edu.ogu.ceng.gateway.entity.Users;
 @Repository
 public interface UsersRepository extends JpaRepository<Users, Long>{
     Optional<Users> findByUsername(String username);
+    default Boolean existsByUsername(String username) {
+        return findByUsername(username).isPresent();
+    }
     Optional<Users> getByUsername(String username);
     
     @Query("SELECT u FROM Users u WHERE u.email = :email")
     Optional<Users> getByEmail(String email);
-    	// repository metodlarını yaz, metodlar service katmanında hazır testlerinin yazılmış olması gerek
+    // repository metodlarını yaz, metodlar service katmanında hazır testlerinin yazılmış olması gerek
     
+    // email ile username getirilir
+    @Query("SELECT u.username FROM Users u WHERE u.email = :email")
+    String getUsernameByEmail(String email);
     
+    // username ile role getirilir
+    @Query("SELECT u.roles FROM Users u WHERE u.username = :username")
+    String getRolesByUsername(String username);
     
+    // username ile paymentmethod getirilir
+    @Query("SELECT u.paymentMethod FROM Payment u WHERE u.user.username = :username")
+    String getPaymentMethodByUsername(String username);
+    
+    // username ile currency getirilir
+    @Query("SELECT u.currency FROM Payment u WHERE u.user.username = :username")
+    String getCurrencyByUsername(String username); 
+    
+    // username ile createdAt getirilir
+    @Query("SELECT u.createdAt FROM Users u WHERE u.username = :username")
+    LocalDateTime getCreatedAtByUsername(String username); 
+    
+
 }
 

@@ -2,6 +2,9 @@ package tr.edu.ogu.ceng.gateway.entity;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+
+import org.hibernate.annotations.Type;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,7 +35,7 @@ public class RateLimit {
 
     //@Convert(converter = DurationConverter.class)
     @Column(name = "window_value", nullable = false)
-    private Duration window;
+    private Integer window;  // window_value artık Integer türünde Duration değil (dakika cinsinden)
 
     @Column(name = "created_by")
     private String createdBy;
