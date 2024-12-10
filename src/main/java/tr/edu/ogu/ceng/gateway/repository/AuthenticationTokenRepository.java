@@ -12,6 +12,11 @@ import tr.edu.ogu.ceng.gateway.entity.AuthenticationToken;
 @Repository
 public interface AuthenticationTokenRepository extends JpaRepository<AuthenticationToken ,Long> {
 	
+	
+	@Query("SELECT u.token FROM AuthenticationToken u WHERE u.user.username = :username")
+	String getTokenByUsername(@Param("username") String username);
+
+	
 	// token ile issuedAt getirilir
 	@Query("SELECT u.issuedAt FROM AuthenticationToken  u WHERE u.token = :token")
 	LocalDateTime getIssuedAtByToken(String token);
