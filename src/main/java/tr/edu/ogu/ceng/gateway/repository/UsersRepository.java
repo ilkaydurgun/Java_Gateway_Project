@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.hibernate.query.NativeQuery;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import tr.edu.ogu.ceng.gateway.entity.Users;
@@ -16,12 +17,15 @@ public interface UsersRepository extends JpaRepository<Users, Long>{
     default Boolean existsByUsername(String username) {
         return findByUsername(username).isPresent();
     }
-    Optional<Users> getByUsername(String username);
-    
+    Users getByUsername(String username);
+
     @Query("SELECT u FROM Users u WHERE u.email = :email")
-    Optional<Users> getByEmail(String email);
-    // repository metodlarını yaz, metodlar service katmanında hazır testlerinin yazılmış olması gerek
+    Users getByEmail(String email);
     
+    // userid ile user getirilir
+    @Query("SELECT u FROM Users u WHERE u.id = :id")
+    Optional<Users> findById(@Param("id") Long id);
+
     // email ile username getirilir
     @Query("SELECT u.username FROM Users u WHERE u.email = :email")
     String getUsernameByEmail(String email);
@@ -41,7 +45,6 @@ public interface UsersRepository extends JpaRepository<Users, Long>{
     // username ile createdAt getirilir
     @Query("SELECT u.createdAt FROM Users u WHERE u.username = :username")
     LocalDateTime getCreatedAtByUsername(String username); 
-    
-
+  
 }
 

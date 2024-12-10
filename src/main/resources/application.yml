@@ -11,25 +11,29 @@ spring:
 server:
   port: 8001  # Gateway'in çalıştığı port
 
+springdoc:
+  api-docs:
+    path: /api-docs
+
 services:
   user:
-    url: http://localhost:8007  # Kullanıcı, grup numarası 7
+    url: http://192.168.137.195:8007  # Kullanıcı, grup numarası 7
   order:
-    url: http://localhost:8003  # Sipariş, grup numarası 3
+    url: http://192.168.137.169:8003  # Sipariş, grup numarası 3
   gateway:
-    url: http://localhost:8001  # Gateway, grup numarası 1
+    url: http://192.168.137.149:8001  # Gateway, grup numarası 1
   payment:
-    url: http://localhost:8006  # Ödeme, grup numarası 6
+    url: http://192.168.137.52:8006  # Ödeme, grup numarası 6
   product:
-    url: http://localhost:8002  # Ürün, grup numarası 2
+    url: http://192.168.137.35:8002  # Ürün, grup numarası 2
   invoice:
-    url: http://localhost:8008  # Fatura, grup numarası 8
+    url: http://192.168.137.140:8008  # Fatura, grup numarası 8
   notification:
-    url: http://localhost:8004  # Bildirim, grup numarası 4
+    url: http://192.168.137.111:8004  # Bildirim, grup numarası 4
   shoppingcart:
-    url: http://localhost:8005  # Alışveriş Sepeti, grup numarası 5
+    url: http://192.168.137.244:8005  # Alışveriş Sepeti, grup numarası 5
   shipping:
-    url: http://localhost:8011  # Kargo, grup numarası 11
+    url: http://192.168.137.179:8011  # Kargo, grup numarası 11
 
   # Ekstra özellikler - Gateway içindeki API yönetimi için
   apikey:
