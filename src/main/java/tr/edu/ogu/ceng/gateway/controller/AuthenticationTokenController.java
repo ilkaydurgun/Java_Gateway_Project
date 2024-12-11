@@ -20,4 +20,14 @@ public class AuthenticationTokenController {
 	public AuthenticationToken getAuthenticationToken(@PathVariable Long id) {
 		return authenticationTokenService.getAuthenticationToken(id);
 	}
+    
+    @GetMapping("/{username}")
+	public String getAuthenticationTokenByUsername(@PathVariable String username) {
+		return authenticationTokenService.getTokenByUsername(username);
+	}
+    
+    @GetMapping("/{token}")
+	public boolean getValidateAuthenticationTokenByUsername(@PathVariable String token) {
+		return authenticationTokenService.validateToken(token);
+	}
 }

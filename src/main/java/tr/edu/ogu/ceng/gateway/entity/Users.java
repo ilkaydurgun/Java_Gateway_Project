@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,6 +20,7 @@ import lombok.Setter;
 
 @Entity
 @Getter @Setter
+@JsonIgnoreProperties(ignoreUnknown = true) // Uzak bilgisayardaki users mikroservisinde bizde bulunmayan değişkenler olduğu için herhangi bir hata almamak için yazıldı
 public class Users {
 
 	
