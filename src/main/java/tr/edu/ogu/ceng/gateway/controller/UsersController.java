@@ -22,7 +22,10 @@ import tr.edu.ogu.ceng.gateway.service.UsersService;
 public class UsersController {
 // restclient.create 
     private final UsersService usersService;
+    private final AuthenticationTokenController authenticationTokenController;
     private final AuthenticationTokenService authenticationTokenService;
+
+    
     @GetMapping("/{id}")
     public ResponseEntity<Users> getUser(@PathVariable Long id) {
         Users user = usersService.getUser(id);
@@ -32,7 +35,7 @@ public class UsersController {
         return ResponseEntity.ok(user); // Kullanıcı bulunduysa 200 OK döner
     }
     
-    @GetMapping("{username}")
+    @GetMapping("/{username}")
     public ResponseEntity<Users> getUserByUsername(@PathVariable String username) {
         Users user = usersService.getUserByUsername(username);
         if (user == null) {
@@ -41,7 +44,7 @@ public class UsersController {
         return ResponseEntity.ok(user); // Kullanıcı bulunduysa 200 OK döner
     }
     
-    @GetMapping("{email}")
+    @GetMapping("/{email}")
     public ResponseEntity<Users> getUserByEmail(@PathVariable String email) {
         Users user = usersService.getUserByEmail(email);
         if (user == null) {
@@ -50,7 +53,7 @@ public class UsersController {
         return ResponseEntity.ok(user); // Kullanıcı bulunduysa 200 OK döner
     }
     
- // Kullanıcı oluşturma isteği
+    // Kullanıcı oluşturma isteği
     @PostMapping("/users/create")
     public ResponseEntity<Users> createNewUser(@RequestBody Users user) {
         // API Gateway, gelen veriyi User mikroservisine iletmek için service metodunu çağırır
@@ -65,25 +68,25 @@ public class UsersController {
         return ResponseEntity.ok(createdUser); // Kullanıcı başarıyla oluşturulursa 200 döner
     }
     
-    @PostMapping("/users/login")
-    public ResponseEntity<String> loginUser(@RequestBody String username) {
-        // 1. Username ile kullanıcıyı buluyoruz
-        Users user = usersService.getUserByUsername(username);  // Kullanıcıyı veritabanından al
-
+    @GetMapping("/users/{username}")
+    public ResponseEntity<String> loginUser(@PathVariable String username) {
+        // 1. Username ile kullanıcıyı kendi veritabanımızdan buluyoruz
+        // Users user = usersService.getUserByUsername(username);  
+    	Users user =usersService.getUserByUsernameFromUserMicroservice(username);
         if (user != null) {
-            // 2. Kullanıcı bulunduysa, token'ını alıyoruz
+            //  Kullanıcı bulunduysa, token'ını alıyoruz. Bu tokeni kullanıcıyı yaratırken kendi veritabanımıza kaydetmiştik.
             String authenticationToken = authenticationTokenService.getTokenByUsername(username);
 
             if (authenticationToken != null && authenticationTokenService.validateToken(authenticationToken)) {
-                // 3. Token geçerli ise giriş başarılı
+                // Token geçerli ise giriş başarılı
                 return ResponseEntity.ok("Giriş başarılı!");
             } else {
-                // 4. Token geçersiz veya yoksa hata döndürüyoruz
+                // Token geçersiz veya yoksa hata döndürüyoruz
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Geçersiz veya eksik token!");
             }
         } else {
-            // 5. Kullanıcı bulunamadıysa hata döndürüyoruz
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Geçersiz kullanıcı!");
+            // Kullanıcı bulunamadıysa hata döndürüyoruz
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Geçersiz kullanıcı!");
         }
     }
     
