@@ -1,5 +1,8 @@
 package tr.edu.ogu.ceng.gateway.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
+import tr.edu.ogu.ceng.gateway.dto.UsersDto;
 import tr.edu.ogu.ceng.gateway.entity.AuthenticationToken;
 import tr.edu.ogu.ceng.gateway.entity.Users;
 import tr.edu.ogu.ceng.gateway.service.AuthenticationTokenService;
@@ -22,10 +26,46 @@ import tr.edu.ogu.ceng.gateway.service.UsersService;
 public class UsersController {
 // restclient.create 
     private final UsersService usersService;
-    private final AuthenticationTokenController authenticationTokenController;
-    private final AuthenticationTokenService authenticationTokenService;
-
     
+    // Kullanıcıdan gelen getuser isteğini user mikroservisine yönlendirir ve oradan gelen isteği kullanıcıya döndürür
+    @GetMapping("/{username}")
+    public ResponseEntity<UsersDto> getUser(@PathVariable String username) {
+        try {
+            UsersDto user = usersService.getUser(username);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
+        }
+    }
+    
+    // Kullanıcı oluşturma isteği
+    @PostMapping("/create")
+    public ResponseEntity<Users> createNewUser(@RequestBody Users user) {
+    	
+    	try {
+        // API Gateway, gelen veriyi User mikroservisine iletmek için service metodunu çağırır
+        Users createdUser = usersService.createNewUser(user);
+        
+        return ResponseEntity.ok(createdUser); // Kullanıcı başarıyla oluşturulursa 200 döner
+    	}
+    	catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
+        }
+    }
+    
+    @GetMapping("/getAllUsers")
+    public ResponseEntity<List<UsersDto>> getAllUsers() {
+        List<UsersDto> users = usersService.getAllUsers();
+        List<UsersDto> usersDTO = users.stream()
+                .map(user -> modelMapper.map(users, UsersDto.class))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(usersDTO);
+    }
+    
+
+    //Bu kısım karşı mikroservisten veri alınmayıp gateway mikroservisinin
+    //kendinden yanıt döndüren metodları barındırıp proje amacı dışında olduğu için yorum satırına alınmıştır. 
+    /* 
     @GetMapping("/{id}")
     public ResponseEntity<Users> getUser(@PathVariable Long id) {
         Users user = usersService.getUser(id);
@@ -53,20 +93,7 @@ public class UsersController {
         return ResponseEntity.ok(user); // Kullanıcı bulunduysa 200 OK döner
     }
     
-    // Kullanıcı oluşturma isteği
-    @PostMapping("/users/create")
-    public ResponseEntity<Users> createNewUser(@RequestBody Users user) {
-        // API Gateway, gelen veriyi User mikroservisine iletmek için service metodunu çağırır
-        Users createdUser = usersService.createNewUser(user);
-        // Kullanıcı oluşturulduktan sonra authentication token'ı oluşturuyoruz
-        String token = authenticationTokenService.createToken(createdUser.getUsername());
-
-        // Authentication token'ı veritabanına kaydediyoruz
-        AuthenticationToken authenticationToken = authenticationTokenService.saveAuthenticationToken(createdUser.getUsername(), token, createdUser.getPassword(),createdUser.getEmail());
-
-        
-        return ResponseEntity.ok(createdUser); // Kullanıcı başarıyla oluşturulursa 200 döner
-    }
+    
     
     @GetMapping("/users/{username}")
     public ResponseEntity<String> loginUser(@PathVariable String username) {
@@ -89,5 +116,5 @@ public class UsersController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Geçersiz kullanıcı!");
         }
     }
-    
+    */
 }

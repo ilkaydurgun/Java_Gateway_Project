@@ -17,6 +17,9 @@ public interface UsersRepository extends JpaRepository<Users, Long>{
     default Boolean existsByUsername(String username) {
         return findByUsername(username).isPresent();
     }
+    
+    
+    @Query("SELECT u FROM Users u WHERE u.username = :username")
     Users getByUsername(String username);
 
     @Query("SELECT u FROM Users u WHERE u.email = :email")
